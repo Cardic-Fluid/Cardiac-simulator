@@ -6,34 +6,48 @@ By Laura Estaire, Chloé Goemans, Laurine Martin & Susanna Rodrigues
 
 """
 PARAMETERS USED IN THE SIMULATION
-
-
+Q = mean flow rate (steady state)
+Pf = Right atrial filling pressure
+Ca = 2 ml/mmHg = equivalent capacitance of the arteries 
+Cv = 100 ml/mmHg = total capacitance of all the veins in the systemic circulation
+Ra = 1 mmHg/ml/sec = peripheral resistance
+Rv = 0.06 mmHg/ml/sec = resistance to veinous flow
+V0 = 3000 ml = zero-pressure filling volume (Volume that fills the undistended system)
+V_t = 4000 ml = total blood volume in the peripherical circulation (85 % of total blood volume)
+Pms = Mean systemic filling pressure 
 
 
 """
-
 import math
 
 # Definition of the parameters with physiological mean values
+Ca = 2
+Cv = 100
+Ra = 1
+Rv = 0.06
+V0 = 3000
+Va0 = 500
+Vv0 = V0 - Va0
+Vt = 4000
+
 Pf = 8
 Pa = 120
 Cs = 0.4
-Cd = 15
-RMV =
-RAV =
+Cd = 14
+Vd = 15
 
-# --> C_t = how to define it. Two states periodic function between Cs and C_t = (V_t - Vd)/P_t
+"""
+Pms = (Vt-V0)/(Ca+Cv)
+Q = (Pms -Pf)/(Rv+Ra(Ca/(Ca+Cv)))
+"""
+# We don't know Pf => How to determine it?
 
-# --> der_t_PL: unknown parameter to estimate ?
+if Pl > Pa:
+    Qin = 0
+else:
+    Qin = (Pa-Pl)/Ra
 
-# When Pa > Pf
-Qin = (Pa-Pf)/RMV
-Qout = 0
-
-# When Pa < Pf
-Qin =  0
-# --> what is than
-Qout =  ((tan(1000*(Pf-Pa) + 1))/2)*(Pf-Pa)/RAV
-
-# Pressure-volume relationship
-C_t*der_t_PL = Qin-Qout
+if Pl<Paorta:
+    Qout = 0
+else:
+    Qout = (Pl-Paorta)/RAV
