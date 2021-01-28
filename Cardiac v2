@@ -5,15 +5,10 @@ By Laura Estaire, Chloé Goemans, Laurine Martin & Susanna Rodrigues
 """
 """
 PARAMETERS USED IN THE SIMULATION
-
-
-
-
 """
 import numpy as np
 from matplotlib import pyplot as plt
 from scipy.integrate import odeint
-
 
 
 HR = 60
@@ -21,7 +16,7 @@ tc = 60/HR
 Tmax = 0.2+0.15*tc
 t = np.arange(0, 1, 0.01)
 tn = t / Tmax
-
+print (type(tn))
 
 # Definition of the elastance function
 def elastance(tn):
@@ -31,7 +26,6 @@ def elastance(tn):
     E = (Emax-Emin)*En+Emin
     return E
 
-
 """
 plt.plot(t, elastance(tn))
 plt.xlabel('time [s]')
@@ -39,9 +33,8 @@ plt.ylabel('Elastance [mmHg/mL]')
 plt.show()
 """
 
-
 # Differential equations
-def model(x, t, E, Eprime):
+def model(x, t, tn,E,Eprime):
     # Definition of the parameters
     Pla = 8
     Pra = 3
@@ -53,35 +46,67 @@ def model(x, t, E, Eprime):
     Rs = 1
     V0 = 12
 
-    # Definition of variables
+     # Definition of variables
     Vlv = x[0]
     Ps = x[1]
     Pao = x[2]
-
     Plv = E*(Vlv-V0)
 
-    # Definition of the coefficient for the valves opening
+     # Measure of dE(t)/dt
+
+
+     # Definition of the coefficient for the valves opening
     coefav = np.tanh(1000*(Plv - Pao) + 1) / 2
     coefmv = np.tanh(1000*(Pla - Plv) + 1) / 2
 
-    # Differential equations
+     # Differential equations
     dVlvdt= coefmv * (Pla - E*(Vlv-V0))/Rmv - coefav * (E*(Vlv-V0-Pao))/Rav
     dPsdt = coefav * (E * (Vlv - V0) - Pao) / (Rav * Cs) - (Ps - Pra) / (Rs * Cs)
-    dPaodt = (1/(1+(coefav*Rao/Rav)))*((Eprime*(Vlv-V0)+E*dVlvdt) * (Rao/Rav) * coefav+dPsdt+(Rao / Ls)*(Ps - Pao))
+    dPaodt = (1/(1+(coefav*Rao/Rav)))*((Eprime*(Vlv-V0)+E*dVlvdt) * (Rao/Rav) * coefav + dPsdt + (Rao/Ls)*(Ps - Pao))
     return [dVlvdt, dPsdt, dPaodt]
 
-E= elastance(tn)
-# Measure of dE(t)/dt
-Eprime = np.diff(E)
-Eprime = np.append(Eprime, Eprime[98])
+
 # Initial conditions
 Vlv0 = 120
-Ps0 = 20
-Pao0 = 80
+Ps0 = 25
+Pao0 = 120
 x0 = [Vlv0, Ps0, Pao0]
 
-# Solving differential equations
-y = odeint(model, x0, t, args=(E,Eprime))
-Vlv = y[:, 0]
-Ps = y[:, 1]
-Pao = y[:, 2]
+Vlv = np.empty_like(t)
+Ps = np.empty_like(t)
+Pao = np.empty_like(t)
+
+
+Vlv[0] = x0[0]
+Ps[0] = x0[1]
+Pao[0] = x0[2]
+
+E= elastance(tn)
+dE = np.diff(E)
+dt = np.diff(t)
+Eprime = dE/dt
+Eprime = np.append(Eprime, Eprime[98])
+for i in range(100):
+    tspan = [t[i-1], t[i]]
+    y = odeint(model, x0, tspan, args=(tn[i],E[i],Eprime[i]))
+    Vlv[i] = y[1, 0]
+    Ps[i] = y[1, 1]
+    Pao[i] = y[1, 2]
+
+x0 = y[1]
+V0 = 12
+Plv = E*(Vlv-V0)
+
+
+# plot results
+#plt.plot(t,Vlv,'g:',label='Vlv(t)')
+plt.plot(t,Plv,'b-',label='Plv(t)')
+plt.plot(t,Pao,'r--',label='Pao(t)')
+plt.ylabel('values')
+plt.xlabel('time')
+plt.legend(loc='best')
+plt.show()
+
+
+plt.plot(t,Vlv)
+plt.show()
