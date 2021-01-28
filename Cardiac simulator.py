@@ -31,8 +31,8 @@ Rs = 1
 HR = 60
 tc = 60/HR
 Tmax = 0.2+0.15*tc
-t = np.arange(1,10,0.01)
-tn = t/Tmax
+t = np.arange(0, 1, 0.01)
+tn = t / Tmax
 
 # Definition of the elastance function
 
@@ -42,8 +42,8 @@ def elastance(tn):
     En = 1.55 * (((tn / 0.7) ** 1.9) / (1 + ((tn / 0.7) ** 1.9))) * (1 / (1 + ((tn / 1.17) ** 21.9)))
     E = (Emax-Emin)*En+Emin
     return E
-print(elastance(tn))
-plt.plot(t,elastance(tn))
+
+plt.plot(t, elastance(tn))
 plt.xlabel('time [s]')
 plt.ylabel('Elastance [mmHg/mL]')
 plt.show()

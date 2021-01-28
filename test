@@ -1,8 +1,9 @@
 import numpy as np
+from matplotlib import pyplot as plt
 HR = 60
 tc = 60/HR
 Tmax = 0.2+0.15*tc
-t = np.arange(1,10,0.01)
+t = np.arange(0,10,0.01)
 tn = t/Tmax
 Emax = 2
 Emin = 0.06
@@ -15,4 +16,8 @@ for i in range(len(tn)):
     E[i] = (Emax-Emin)*En[i]+Emin
 
 print(En)
+plt.plot(t,E)
+plt.xlabel('time [s]')
+plt.ylabel('Elastance [mmHg/mL]')
+plt.show()
 
