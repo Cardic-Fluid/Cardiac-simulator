@@ -1,5 +1,18 @@
 import numpy as np
+HR = 60
+tc = 60/HR
+Tmax = 0.2+0.15*tc
+t = np.arange(1,10,0.01)
+tn = t/Tmax
+Emax = 2
+Emin = 0.06
+En = np.zeros(shape=len(t))
+E= np.zeros(shape=len(t))
 
-t = np.arange(1,10,1)
-tn = t/2
-print(tn)
+
+for i in range(len(tn)):
+    En[i] = 1.55 * (((tn[i] / 0.7) ** 1.9) / (1 + (tn[i] / 0.7) ** 1.9)) * (1 / (1 + ((tn[i] / 1.17) ** 21.9)))
+    E[i] = (Emax-Emin)*En[i]+Emin
+
+print(En)
+
