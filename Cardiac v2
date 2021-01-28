@@ -34,7 +34,7 @@ plt.show()
 """
 
 # Differential equations
-def model(x, t, tn,E,Eprime):
+def model(x, t,E,Eprime):
     # Definition of the parameters
     Pla = 8
     Pra = 3
@@ -86,14 +86,14 @@ dE = np.diff(E)
 dt = np.diff(t)
 Eprime = dE/dt
 Eprime = np.append(Eprime, Eprime[98])
-for i in range(100):
+for i in range(1,100):
     tspan = [t[i-1], t[i]]
-    y = odeint(model, x0, tspan, args=(tn[i],E[i],Eprime[i]))
+    print(tspan)
+    y = odeint(model, x0, tspan, args=(E[i],Eprime[i]))
     Vlv[i] = y[1, 0]
     Ps[i] = y[1, 1]
     Pao[i] = y[1, 2]
-
-x0 = y[1]
+    x0 = y[1]
 V0 = 12
 Plv = E*(Vlv-V0)
 
