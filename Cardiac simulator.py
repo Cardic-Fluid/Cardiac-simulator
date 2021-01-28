@@ -42,7 +42,7 @@ plt.show()
 
 
 # Differential equations
-def model (z,t,Vlv,Pp,Pao,tn):
+def model (x,t,Tmax):
     # Definition of the parameters
     Prl = 5
     Pla = 8
@@ -55,13 +55,23 @@ def model (z,t,Vlv,Pp,Pao,tn):
     Rs = 1
     V0 = 12
 
+    tn = t / Tmax
+
     # Definition of variables
-    Vlv = z[0]
-    Ps = z[1]
-    Pao = z[2]
+    Vlv = x[0]
+    Ps = x[1]
+    Pao = x[2]
     E= elastance(tn)
     Plv = E*(Vlv-V0)
 
+    E1 = np.transpose(E)
+    return E1
+print(model ([1,1,1],t,Tmax))
+plt.plot(tn,E)
+plt.xlabel('time [s]')
+plt.ylabel('Elastance [mmHg/mL]')
+plt.show()
+"""
     Eprime = np.diff(E)
 
     coefav = math.tanh(1000(Plv - Pao) + 1) / 2
@@ -74,6 +84,12 @@ def model (z,t,Vlv,Pp,Pao,tn):
     return [dVlvdt, dPsdt, dPaodt]
 
 # Initial conditions
-Vlv0 = 70
-Pp0 =
-Pao0 =
+Vlv0 = 120
+Pp0 = 20
+Pao0 = 80
+
+y = odeint(model,[Vlv0,Pp0,Pao0],t,args=(Tmax,))
+Vlv = y[:,0]
+Pp = y[:,1]
+Pao=y[:,2]
+"""

@@ -14,13 +14,15 @@ def elastance(tn):
     En = 1.55 * (((tn / 0.7) ** 1.9) / (1 + ((tn / 0.7) ** 1.9))) * (1 / (1 + ((tn / 1.17) ** 21.9)))
     E = (Emax-Emin)*En+Emin
     return E
+
+E =
 #x = sp.Symbol('tn')
 Eprime = np.diff(elastance(tn))
 
 print(Eprime)
 
-#plt.plot(t,elastance(tn))
-plt.plot(t,Eprime)
+plt.plot(t,elastance(tn))
+#plt.plot(t,Eprime)
 plt.xlabel('time [s]')
 plt.ylabel('Elastance [mmHg/mL]')
 plt.show()
