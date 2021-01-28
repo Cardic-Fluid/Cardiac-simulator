@@ -1,22 +1,26 @@
 import numpy as np
 from matplotlib import pyplot as plt
+import sympy as sp
+
 HR = 60
 tc = 60/HR
 Tmax = 0.2+0.15*tc
-t = np.arange(0,10,0.01)
-tn = t/Tmax
-Emax = 2
-Emin = 0.06
-En = np.zeros(shape=len(t))
-E= np.zeros(shape=len(t))
+t = np.arange(0, 1, 0.01)
+tn = t / Tmax
 
+def elastance(tn):
+    Emax = 2
+    Emin = 0.06
+    En = 1.55 * (((tn / 0.7) ** 1.9) / (1 + ((tn / 0.7) ** 1.9))) * (1 / (1 + ((tn / 1.17) ** 21.9)))
+    E = (Emax-Emin)*En+Emin
+    return E
+#x = sp.Symbol('tn')
+Eprime = np.diff(elastance(tn))
 
-for i in range(len(tn)):
-    En[i] = 1.55 * (((tn[i] / 0.7) ** 1.9) / (1 + (tn[i] / 0.7) ** 1.9)) * (1 / (1 + ((tn[i] / 1.17) ** 21.9)))
-    E[i] = (Emax-Emin)*En[i]+Emin
+print(Eprime)
 
-print(En)
-plt.plot(t,E)
+#plt.plot(t,elastance(tn))
+plt.plot(t,Eprime)
 plt.xlabel('time [s]')
 plt.ylabel('Elastance [mmHg/mL]')
 plt.show()
