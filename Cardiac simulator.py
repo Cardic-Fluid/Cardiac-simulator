@@ -12,6 +12,9 @@ PARAMETERS USED IN THE SIMULATION
 
 """
 import math
+import numpy as np
+from matplotlib import pyplot as plt
+from scipy.integrate import odeint
 
 # Definition of the parameters with physiological mean values
 Prl = 5
@@ -25,6 +28,24 @@ Cs = 1.41
 Rs = 1
 
 
+HR = 75
+tc = 60/HR
+Tmax = 0.2+0.15*tc
+t = np.arange(1,10,0.01)
+tn = t/Tmax
+def elastance(tn):
+    Emax = 2
+    Emin = 0.06
+    En = 1.55 * (((tn/0.7) ^ 1.9)/(1+(tn/0.7) ^ 1.9)) * (1/1+(tn/1.17) ^ 21.9)
+    E = (Emax-Emin)*En+Emin
+    return E
+# Definition of the elastance function
+
+print(elastance(tn))
+"""
+coefm = 
+
 # Differential equations
-
-
+def model (Vlv,t)
+    dVlvdt =
+"""
