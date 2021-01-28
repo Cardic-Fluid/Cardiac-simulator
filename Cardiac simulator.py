@@ -10,11 +10,10 @@ PARAMETERS USED IN THE SIMULATION
 
 
 """
-import math
 import numpy as np
 from matplotlib import pyplot as plt
 from scipy.integrate import odeint
-from sympy import *
+
 
 
 HR = 60
@@ -33,16 +32,13 @@ def elastance(tn):
     return E
 
 
+"""
 plt.plot(t, elastance(tn))
 plt.xlabel('time [s]')
 plt.ylabel('Elastance [mmHg/mL]')
-plt.draw()
+plt.show()
+"""
 
-"""
-# Vectorization of the coefficients
-def vectcoef(x):
-    return (math.tanh(1000*x)+1)/2
-"""
 
 # Differential equations
 def model(x, t, tn):
@@ -68,7 +64,7 @@ def model(x, t, tn):
     Eprime = np.diff(E)
     Eprime = np.append(Eprime, Eprime[98])
 
-    # Defenition of the coefficient for the valves opening
+    # Definition of the coefficient for the valves opening
     coefav = np.tanh(1000*(Plv - Pao) + 1) / 2
     coefmv = np.tanh(1000*(Pla - Plv) + 1) / 2
 
@@ -76,7 +72,6 @@ def model(x, t, tn):
     dVlvdt= coefmv * (Pla - E*(Vlv-V0))/Rmv - coefav * (E*(Vlv-V0-Pao))/Rav
     dPsdt = coefav * (E * (Vlv - V0) - Pao) / (Rav * Cs) - (Ps - Pra) / (Rs * Cs)
     dPaodt = (1/(1+(coefav*Rao/Rav)))*((Eprime*(Vlv-V0)+E*dVlvdt) * (Rao/Rav) * coefav+dPsdt+(Rao / Ls)*(Ps - Pao))
-
     return [dVlvdt, dPsdt, dPaodt]
 
 
