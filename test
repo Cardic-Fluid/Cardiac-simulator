@@ -18,12 +18,21 @@ def elastance(tn):
 E = elastance(tn)
 #x = sp.Symbol('tn')
 Eprime = np.diff(elastance(tn))
+np.append(Eprime, Eprime[98])
 
+
+Vlv= np.ones(100)
+V0 =12
+Plv = E * (Vlv - V0)
+Pao = np.zeros(100)
+coefav = np.tanh(1000 * (Plv - Pao) + 1) / 2
+print(len(coefav))
 #print(Eprime)
-
+"""
 plt.plot(t,E)
 #plt.plot(t,Eprime)
 plt.xlabel('time [s]')
 plt.ylabel('Elastance [mmHg/mL]')
 plt.show()
 
+"""

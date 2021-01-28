@@ -33,18 +33,20 @@ def elastance(tn):
     return E
 
 
-"""
 plt.plot(t, elastance(tn))
 plt.xlabel('time [s]')
 plt.ylabel('Elastance [mmHg/mL]')
-plt.show()
-"""
+plt.draw()
 
+"""
+# Vectorization of the coefficients
+def vectcoef(x):
+    return (math.tanh(1000*x)+1)/2
+"""
 
 # Differential equations
 def model(x, t, tn):
     # Definition of the parameters
-    # Prl = 5
     Pla = 8
     Pra = 3
     Rmv = 0.005
@@ -62,10 +64,13 @@ def model(x, t, tn):
     E= elastance(tn)
     Plv = E*(Vlv-V0)
 
+    # Measure of dE(t)/dt
     Eprime = np.diff(E)
+    Eprime = np.append(Eprime, Eprime[98])
 
-    coefav = math.tanh(1000(Plv - Pao) + 1) / 2
-    coefmv = math.tanh(1000(Pla - Plv) + 1) / 2
+    # Defenition of the coefficient for the valves opening
+    coefav = np.tanh(1000*(Plv - Pao) + 1) / 2
+    coefmv = np.tanh(1000*(Pla - Plv) + 1) / 2
 
     # Differential equations
     dVlvdt= coefmv * (Pla - E*(Vlv-V0))/Rmv - coefav * (E*(Vlv-V0-Pao))/Rav
@@ -77,10 +82,12 @@ def model(x, t, tn):
 
 # Initial conditions
 Vlv0 = 120
-Pp0 = 20
+Ps0 = 20
 Pao0 = 80
+x0 = [Vlv0, Ps0, Pao0]
 
-y = odeint(model, [Vlv0, Pp0, Pao0], t, args=(tn,))
+
+y = odeint(model, x0, t, args=(tn,))
 Vlv = y[:, 0]
-Pp = y[:, 1]
+Ps = y[:, 1]
 Pao = y[:, 2]
